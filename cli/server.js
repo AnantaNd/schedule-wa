@@ -20,20 +20,27 @@ let schedules = [];
 
 // Inisialisasi WhatsApp Client asli (whatsapp-web.js)
 console.log('Memulai WhatsApp Client (whatsapp-web.js)...');
+const puppeteerConfig = {
+  headless: true,
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-accelerated-2d-canvas',
+    '--disable-gpu',
+    '--disable-features=IsolateOrigins,site-per-process',
+    '--disable-site-isolation-trials',
+  ],
+};
+
+// Jika di Railway/Docker, gunakan Chromium sistem
+if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+  puppeteerConfig.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+}
+
 const client = new Client({
   authStrategy: new LocalAuth(),
-  puppeteer: {
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--disable-gpu',
-      '--disable-features=IsolateOrigins,site-per-process',
-      '--disable-site-isolation-trials',
-    ],
-  },
+  puppeteer: puppeteerConfig,
 });
 
 client.on('qr', qr => {

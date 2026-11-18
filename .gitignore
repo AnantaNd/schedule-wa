@@ -2,3 +2,7 @@ node_modules/
 .wwebjs_auth/
 .wwebjs_cache/
 package-lock.json
+cli/node_modules/
+cli/.wwebjs_auth/
+cli/.wwebjs_cache/
+cli/package-lock.json
