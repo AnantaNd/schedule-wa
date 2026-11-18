@@ -4,8 +4,8 @@
   "description": "WhatsApp scheduled message bot using whatsapp-web.js and node-cron",
   "type": "commonjs",
   "scripts": {
-    "dev": "node server.js",
-    "cli": "node index.js"
+    "dev": "node cli/server.js",
+    "cli": "node cli/index.js"
   },
   "dependencies": {
     "node-cron": "^3.0.3",
