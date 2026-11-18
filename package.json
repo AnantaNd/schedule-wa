@@ -6,7 +6,6 @@
   "type": "commonjs",
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js",
     "cli": "node index.js"
   },
   "dependencies": {
