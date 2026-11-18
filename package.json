@@ -1,0 +1,17 @@
+{
+  "name": "schedule-chat",
+  "version": "1.0.0",
+  "description": "WhatsApp scheduled message bot using whatsapp-web.js and node-cron",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "cli": "node index.js"
+  },
+  "dependencies": {
+    "node-cron": "^3.0.3",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.26.0"
+  }
+}
