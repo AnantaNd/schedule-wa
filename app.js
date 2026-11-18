@@ -4,8 +4,23 @@ let schedules = [];
 let qrcodeInstance = null;
 let lastQrString = '';
 
+// Ambil base URL backend dari localStorage (bisa diisi user)
+function getBackendUrl() {
+  return (localStorage.getItem('wa_backend_url') || '').replace(/\/$/, '');
+}
+
+function isExternalBackend() {
+  const url = getBackendUrl();
+  return url.startsWith('http://') || url.startsWith('https://');
+}
+
+function apiUrl(path) {
+  const backend = getBackendUrl();
+  if (backend) return backend + path;
+  return path; // fallback lokal / Vercel serverless
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Set default date & time
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('onceDate').value = today;
 
@@ -14,9 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const mins = String(now.getMinutes()).padStart(2, '0');
   document.getElementById('onceTime').value = `${hours}:${mins}`;
 
-  // Poll status WhatsApp setiap 2.5 detik
-  checkWhatsAppStatus();
-  setInterval(checkWhatsAppStatus, 2500);
+  // Jika belum ada backend URL → tampilkan modal konfigurasi dulu
+  const savedUrl = localStorage.getItem('wa_backend_url');
+  if (savedUrl) {
+    document.getElementById('backendUrl').value = savedUrl;
+    document.getElementById('serverModal').classList.add('hidden');
+    checkWhatsAppStatus();
+    setInterval(checkWhatsAppStatus, 2500);
+  } else {
+    document.getElementById('serverModal').classList.remove('hidden');
+  }
 
   fetchSchedules();
 });
@@ -41,10 +63,47 @@ function showToast(message, type = 'success') {
   }, 4000);
 }
 
+// Simpan backend URL & tes koneksi
+async function saveBackendUrl() {
+  const urlInput = document.getElementById('backendUrl').value.trim().replace(/\/$/, '');
+  const resultEl = document.getElementById('serverTestResult');
+
+  if (!urlInput || (!urlInput.startsWith('http://') && !urlInput.startsWith('https://'))) {
+    resultEl.textContent = '❌ URL tidak valid. Harus diawali https://';
+    resultEl.className = 'text-xs text-center mt-3 text-rose-400';
+    resultEl.classList.remove('hidden');
+    return;
+  }
+
+  resultEl.textContent = '⏳ Menguji koneksi ke server...';
+  resultEl.className = 'text-xs text-center mt-3 text-amber-400';
+  resultEl.classList.remove('hidden');
+
+  try {
+    const res = await fetch(urlInput + '/api/wa-status', { signal: AbortSignal.timeout(8000) });
+    const data = await res.json();
+
+    localStorage.setItem('wa_backend_url', urlInput);
+    document.getElementById('backendUrl').value = urlInput;
+
+    resultEl.textContent = '✅ Koneksi berhasil! Memuat dashboard...';
+    resultEl.className = 'text-xs text-center mt-3 text-emerald-400';
+
+    setTimeout(() => {
+      document.getElementById('serverModal').classList.add('hidden');
+      checkWhatsAppStatus();
+      setInterval(checkWhatsAppStatus, 2500);
+    }, 1000);
+  } catch (err) {
+    resultEl.textContent = `❌ Gagal konek: ${err.message}. Pastikan server berjalan & ngrok aktif.`;
+    resultEl.className = 'text-xs text-center mt-3 text-rose-400';
+  }
+}
+
 // Cek status WhatsApp langsung dari backend server
 async function checkWhatsAppStatus() {
   try {
-    const res = await fetch('/api/wa-status');
+    const res = await fetch(apiUrl('/api/wa-status'), { signal: AbortSignal.timeout(5000) });
     const data = await res.json();
 
     const statusBadge = document.getElementById('waStatusBadge');
@@ -122,7 +181,7 @@ async function checkWhatsAppStatus() {
 async function logoutWA() {
   if (!confirm('Apakah Anda yakin ingin logout dari akun WhatsApp ini?')) return;
   try {
-    const res = await fetch('/api/wa-logout', { method: 'POST' });
+    const res = await fetch(apiUrl('/api/wa-logout'), { method: 'POST' });
     const data = await res.json();
     if (data.success) {
       showToast('Logout berhasil! Menampilkan QR Code baru.');
@@ -255,7 +314,7 @@ async function handleFormSubmit(e) {
   submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
 
   try {
-    const res = await fetch('/api/schedule', {
+    const res = await fetch(apiUrl('/api/schedule'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -280,7 +339,7 @@ async function handleFormSubmit(e) {
 // Fetch Schedules
 async function fetchSchedules() {
   try {
-    const res = await fetch('/api/schedule');
+    const res = await fetch(apiUrl('/api/schedule'));
     const data = await res.json();
     schedules = data.schedules || [];
     renderSchedules();
@@ -359,7 +418,7 @@ function renderSchedules() {
 async function deleteSchedule(id) {
   if (!confirm('Hapus jadwal ini?')) return;
   try {
-    const res = await fetch(`/api/schedule?id=${id}`, { method: 'DELETE' });
+    const res = await fetch(apiUrl(`/api/schedule?id=${id}`), { method: 'DELETE' });
     const result = await res.json();
     if (res.ok) {
       showToast('Jadwal dihapus!');

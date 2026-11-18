@@ -369,6 +369,70 @@
     </div>
   </main>
 
+  <!-- Modal: Backend Server Config -->
+  <div id="serverModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-7 shadow-2xl">
+      
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl border border-emerald-500/20">
+          <i class="fa-solid fa-server"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-lg text-white">Hubungkan ke Backend Server</h3>
+          <p class="text-xs text-slate-400">Masukkan URL server WhatsApp Bot Anda</p>
+        </div>
+      </div>
+
+      <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 mb-5 text-xs text-amber-200 leading-relaxed">
+        <i class="fa-solid fa-circle-info mr-1 text-amber-400"></i>
+        <strong>Vercel hanya menampilkan UI.</strong> WhatsApp membutuhkan server Node.js aktif 24 jam yang menjalankan Chromium. Masukkan URL server backend Anda (lokal via ngrok, Railway, atau Render).
+      </div>
+
+      <div class="space-y-3 mb-5">
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">URL Backend Server</label>
+        <input
+          type="url"
+          id="backendUrl"
+          placeholder="https://xxxx.ngrok-free.app  atau  https://app.up.railway.app"
+          class="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+        />
+        <p class="text-[11px] text-slate-500">Tanpa garis miring di akhir. Contoh: <span class="font-mono text-slate-400">https://abc123.ngrok-free.app</span></p>
+      </div>
+
+      <!-- Panduan Cepat -->
+      <div class="bg-slate-800/60 rounded-2xl p-4 mb-5 space-y-3 text-xs">
+        <p class="font-semibold text-slate-300 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-emerald-400"></i> Cara Jalankan Backend (Pilih Salah Satu):</p>
+        
+        <div class="space-y-1">
+          <p class="text-emerald-400 font-semibold">Opsi 1: Lokal + ngrok (gratis, cepat)</p>
+          <div class="bg-slate-950 rounded-xl p-3 font-mono text-[11px] text-slate-300 space-y-1 select-all">
+            <p># Terminal 1 - Jalankan server</p>
+            <p>cd cli && npm install && node server.js</p>
+            <p></p>
+            <p># Terminal 2 - Expose ke internet</p>
+            <p>ngrok http 3000</p>
+          </div>
+          <p class="text-slate-400">Copy URL ngrok (contoh: <span class="font-mono text-slate-300">https://abc.ngrok-free.app</span>) ke kolom di atas.</p>
+        </div>
+
+        <div class="space-y-1 pt-2 border-t border-slate-700">
+          <p class="text-sky-400 font-semibold">Opsi 2: Railway.app (server 24 jam gratis)</p>
+          <p class="text-slate-400">1. Buka <span class="text-sky-300 font-mono">railway.app</span> → New Project → Deploy from GitHub Repo</p>
+          <p class="text-slate-400">2. Pilih repo <span class="font-mono text-slate-300">AnantaNd/schedule-wa</span></p>
+          <p class="text-slate-400">3. Set <strong class="text-white">Root Directory</strong> ke <span class="font-mono text-slate-300">cli</span></p>
+          <p class="text-slate-400">4. Copy URL Railway ke kolom di atas.</p>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="saveBackendUrl()" class="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-plug"></i> Hubungkan & Tes Koneksi
+        </button>
+      </div>
+      <p id="serverTestResult" class="text-xs text-center mt-3 text-slate-500 hidden"></p>
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 border border-slate-800 text-slate-200 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm">
     <span id="toastIcon"></span>
