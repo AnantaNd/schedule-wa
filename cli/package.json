@@ -1,0 +1,16 @@
+{
+  "name": "schedule-chat-cli",
+  "version": "1.0.0",
+  "description": "WhatsApp scheduler CLI (jalankan lokal dengan node-cron dan whatsapp-web.js)",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "cli": "node index.js"
+  },
+  "dependencies": {
+    "node-cron": "^3.0.3",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.26.0"
+  }
+}

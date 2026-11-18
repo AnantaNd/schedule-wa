@@ -1,15 +1,10 @@
 {
   "name": "schedule-chat",
   "version": "1.0.0",
-  "description": "WhatsApp scheduled message bot using whatsapp-web.js and node-cron",
+  "description": "WhatsApp scheduled message bot - Web UI for Vercel",
   "type": "commonjs",
   "scripts": {
     "dev": "node cli/server.js",
     "cli": "node cli/index.js"
-  },
-  "dependencies": {
-    "node-cron": "^3.0.3",
-    "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "^1.26.0"
   }
 }
