@@ -1,5 +1,5 @@
 # ============================================
-# Dockerfile untuk Railway - WhatsApp Scheduler
+# Dockerfile untuk Railway / Render - WhatsApp Scheduler
 # ============================================
 
 FROM node:20-slim
@@ -46,7 +46,7 @@ RUN npm install --omit=dev
 # Copy semua file cli
 COPY cli/ ./
 
-# Port default Railway
+# Port default (Render inject $PORT otomatis)
 EXPOSE 3000
 
 # Start server
